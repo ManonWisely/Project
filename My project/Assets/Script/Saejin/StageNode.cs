@@ -10,4 +10,5 @@ public class StageNode : MonoBehaviour
     public int idx;
     public int prevNodeCount = 0;
     public int type = 0; // ¸Ê Å¸ÀÔÀº 0 ~ 6 ÃÑ 7°³ ·£´ıÇÏ°Ô ¹èÁ¤
+    public string stat;
 }

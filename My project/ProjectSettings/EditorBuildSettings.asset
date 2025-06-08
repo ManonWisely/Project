@@ -32,6 +32,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scene/03. FieldScene/AmareFieldScene.unity
     guid: a8a132c268f22b941a9e9128f2a6887a
+  - enabled: 1
+    path: Assets/Scene/04. BattleScene/BattleScene.unity
+    guid: b40b32c0609f2764ebfbfc72a89e1bf1
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: ebc31ab495f64964d816943f3ce2ba61, type: 3}
   m_UseUCBPForAssetBundles: 0

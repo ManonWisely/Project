@@ -52,6 +52,7 @@ public class SpawnStage : MonoBehaviour
         var stage = Instantiate(firstStagePrefab, content);
         stage.GetComponent<RectTransform>().anchoredPosition = new Vector2(x_section * (sectionCount - 1), 0);
         startNode = stage;
+        startNode.stat = "opened";
     }
 
     void generateStageNodes()
@@ -288,6 +289,7 @@ public class SpawnStage : MonoBehaviour
             {
                 selectType = Random.Range(0, types.Count);
                 sections[i][j].type = selectType;
+                sections[i][j].stat = "locked";
             }
         }
 
@@ -297,6 +299,49 @@ public class SpawnStage : MonoBehaviour
             {
                 Debug.Log(sections[i][j].type);
             }
+        }
+    }
+
+    public void find_section(StageNode node)
+    {
+        int x, y;
+        if (node == startNode || sections[8][0] == node)
+        {
+            return;
+        }
+
+        for (int i = 0; i < sections.Count; i++)
+        {
+            for (int j = 0;j < sections[i].Count; j++)
+            {
+                if (sections[i][j] == node)
+                {
+                    x = i;
+                    y = j;
+                    disabled_node(x, y);
+                    return;
+                }
+            }
+        }
+    }
+
+    void disabled_node(int x, int y)
+    {
+        for (int i = 0; i < sections[x].Count; i++)
+        {
+            if (i == y)
+            {
+                continue;
+            }
+            else
+            {
+                sections[x][i].stat = "locked";
+            }
+        }
+
+        for (int i = 0; i < sections[x].Count; i++)
+        {
+            Debug.Log($"{x} Sections {i} 번째 스테이지 상태 : {sections[x][i].stat}");
         }
     }
 
