@@ -5,10 +5,12 @@ using UnityEditor.SceneManagement;
 public class SpawnStage : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] RectTransform content;
+    [SerializeField] RectTransform nodesCanvas;
     [SerializeField] StageNode firstStagePrefab;
     [SerializeField] StageNode middleStagePrefab;
     [SerializeField] StageNode lastStagePrefab;
+    [SerializeField] LineGenerate linePrefab;
+    [SerializeField] SpawnLine spawnLine;
 
     [Header("Grid Settings")]
     [SerializeField] int sectionCount = 10;
@@ -17,15 +19,15 @@ public class SpawnStage : MonoBehaviour
     [SerializeField] int yGap = 0;
 
     private Rect rect;
-    private StageNode startNode;
+    public StageNode startNode;
     private float x_section, y_section, x_section2, y_section2, randX, randY;
     public Color gizmoColor = Color.cyan;
     public float gizmoWidth = 2f;
-    private List<List<StageNode>> sections;
+    public List<List<StageNode>> sections;
 
     void Start()
     {
-        rect = content.rect;
+        rect = nodesCanvas.rect;
         x_section = rect.width / 2f;
         y_section = rect.height / 2f;
         x_section2 = -(rect.width / 2f);
@@ -45,11 +47,12 @@ public class SpawnStage : MonoBehaviour
         connectStageNodes();
         anotherDestroyNotConnect();
         setType();
+        spawnLine.draw_lines();
     }
 
     void firstStageNodeGenerate()
     {
-        var stage = Instantiate(firstStagePrefab, content);
+        var stage = Instantiate(firstStagePrefab, nodesCanvas);
         stage.GetComponent<RectTransform>().anchoredPosition = new Vector2(x_section * (sectionCount - 1), 0);
         startNode = stage;
         startNode.stat = "opened";
@@ -62,7 +65,7 @@ public class SpawnStage : MonoBehaviour
         {
             for (int j = 0; j < sectionPerStage; j++)
             {
-                var stage = Instantiate(middleStagePrefab, content);
+                var stage = Instantiate(middleStagePrefab, nodesCanvas);
                 if (j == 0)
                 {
                     randX = Random.Range(-xGap, xGap);
@@ -78,7 +81,7 @@ public class SpawnStage : MonoBehaviour
 
                 randX = Random.Range(-xGap, xGap);
                 randY = Random.Range(-yGap, yGap);
-                stage = Instantiate(middleStagePrefab, content);
+                stage = Instantiate(middleStagePrefab, nodesCanvas);
                 stage.GetComponent<RectTransform>().anchoredPosition = new Vector2(x_section * i + randX, y_section2 * j + randY);
                 sections[idx].Add(stage);
             }
@@ -89,7 +92,7 @@ public class SpawnStage : MonoBehaviour
         {
             for (int j = 0; j < sectionPerStage; j++)
             {
-                var stage = Instantiate(middleStagePrefab, content);
+                var stage = Instantiate(middleStagePrefab, nodesCanvas);
                 if (j == 0)
                 {
                     randX = Random.Range(-xGap, xGap);
@@ -105,7 +108,7 @@ public class SpawnStage : MonoBehaviour
 
                 randX = Random.Range(-xGap, xGap);
                 randY = Random.Range(-yGap, yGap);
-                stage = Instantiate(middleStagePrefab, content);
+                stage = Instantiate(middleStagePrefab, nodesCanvas);
                 stage.GetComponent<RectTransform>().anchoredPosition = new Vector2(x_section2 * i + randX, y_section2 * j + randY);
                 sections[idx].Add(stage);
             }
@@ -128,7 +131,7 @@ public class SpawnStage : MonoBehaviour
 
     void lastStageNodeGenerate()
     {
-        var stage = Instantiate(lastStagePrefab, content);
+        var stage = Instantiate(lastStagePrefab, nodesCanvas);
 
         stage.GetComponent<RectTransform>().anchoredPosition = new Vector2(x_section2 * 8 + 300, y_section * 0);
         sections[8].Add(stage);
@@ -233,20 +236,20 @@ public class SpawnStage : MonoBehaviour
 
     void firstConnectNodes()
     {
-        var stage = Instantiate(middleStagePrefab, content);
+        var stage = Instantiate(middleStagePrefab, nodesCanvas);
 
         stage.GetComponent<RectTransform>().anchoredPosition = new Vector2(x_section * (sectionCount - 3), y_section * 2);
         startNode.nextNodes.Add(stage);
         stage.isSelected = true;
         sections[0].Add(stage);
 
-        stage = Instantiate(middleStagePrefab, content);
+        stage = Instantiate(middleStagePrefab, nodesCanvas);
         stage.GetComponent<RectTransform>().anchoredPosition = new Vector2(x_section * (sectionCount - 3), y_section * 0);
         startNode.nextNodes.Add(stage);
         stage.isSelected = true;
         sections[0].Add(stage);
 
-        stage = Instantiate(middleStagePrefab, content);
+        stage = Instantiate(middleStagePrefab, nodesCanvas);
         stage.GetComponent<RectTransform>().anchoredPosition = new Vector2(x_section * (sectionCount - 3), y_section2 * 2);
         startNode.nextNodes.Add(stage);
         stage.isSelected = true;
@@ -336,6 +339,22 @@ public class SpawnStage : MonoBehaviour
             else
             {
                 sections[x][i].stat = "locked";
+                for (int j = 0; j < sections[x][i].lines.Count; j++)
+                {
+                    sections[x][i].lines[j].setInvalidColor();
+                }
+            }
+        }
+        
+        if (x == 0)
+        {
+            for (int i = 0; i < startNode.lines.Count; i++)
+            {
+                if (i == y)
+                {
+                    continue;
+                }
+                startNode.lines[i].setInvalidColor();
             }
         }
 
@@ -343,41 +362,5 @@ public class SpawnStage : MonoBehaviour
         {
             Debug.Log($"{x} Sections {i} 번째 스테이지 상태 : {sections[x][i].stat}");
         }
-    }
-
-    void OnDrawGizmos()
-    {
-        Gizmos.color = gizmoColor;
-
-        if (startNode != null)
-        {
-            foreach (var nxt in startNode.nextNodes)
-            {
-                if (nxt == null) continue;
-                Gizmos.DrawLine(
-                    startNode.transform.position,
-                    nxt.transform.position
-                );
-            }
-        }
-
-        if (sections != null)
-        {
-            for (int sec = 0; sec < sections.Count; sec++)
-            {
-                foreach (var node in sections[sec])
-                {
-                    if (node == null) continue;
-                    foreach (var nxt in node.nextNodes)
-                    {
-                        if (nxt == null) continue;
-                        Gizmos.DrawLine(
-                            node.transform.position,
-                            nxt.transform.position
-                        );
-                    }
-                }
-            }
-        }
-    }
+    } 
 }

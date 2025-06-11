@@ -2,12 +2,14 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using TreeEditor;
 
 public class EnterStage : MonoBehaviour, IPointerClickHandler
 {
     public string sceneToLoad;
     private List<string> stageNames = new List<string> { "FelixFieldScene", "PhobiaFieldScene", "OdiumFieldScene", "AmareFieldScene", "IrascorFieldScene", "LacrimaFieldScene", "HavetFieldScene" };
     private StageNode stageNode;
+    private StageNode prevNode;
     private SpawnStage spawnStage;
 
     public void OnPointerClick(PointerEventData eventData)
@@ -37,6 +39,27 @@ public class EnterStage : MonoBehaviour, IPointerClickHandler
                 stageNode.nextNodes[i].stat = "opened";
                 stageNode.stat = "cleared";
                 spawnStage.find_section(stageNode);
+            }
+
+            if (stageNode.prevNodes.Count != 0)
+            {
+                prevNode = stageNode.prevNodes[0];
+                for (int i = 0; i < prevNode.lines.Count; i++)
+                {
+                    if (prevNode.lines[i].endPoint == stageNode.transform)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        prevNode.lines[i].setInvalidColor();
+                    }
+
+                }
+            }
+            for (int i = 0; i < stageNode.lines.Count; i++)
+            {
+                stageNode.lines[i].setOpenColor();
             }
             //SceneManager.LoadScene(sceneToLoad);
         }

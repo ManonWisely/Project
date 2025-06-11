@@ -67,7 +67,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d1e76b53e4735aa4e8036b6dcab0c484, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 18edabe7d38f9f44490d91ae11b5757a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -93,9 +93,11 @@ MonoBehaviour:
   isLast: 0
   prevNodes: []
   nextNodes: []
+  lines: []
   idx: 0
   prevNodeCount: 0
   type: 0
+  stat: 
 --- !u!114 &-3466525217450418895
 MonoBehaviour:
   m_ObjectHideFlags: 0
