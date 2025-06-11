@@ -4,12 +4,15 @@ using UnityEngine.SceneManagement;
 
 public class RegionManager : MonoBehaviour
 {
-    public RegionController startRegion;      // 첫 출발 영역
+    public RegionController startRegion;
     private RegionController currentRegion;
 
     void Start()
     {
-        // 첫 영역만 활성화, 나머지 비활성화
+        // 시작 맵 씬 이름 기록
+        GameState.Instance.mapSceneName = SceneManager.GetActiveScene().name;
+
+        // 첫 영역만 활성화
         foreach (var reg in FindObjectsOfType<RegionController>())
         {
             reg.gameObject.SetActive(reg == startRegion);
@@ -25,44 +28,27 @@ public class RegionManager : MonoBehaviour
     void HandleClick()
     {
         Vector2 wp = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Debug.Log($"[Click] WorldPos: {wp}");
+        var hit = Physics2D.Raycast(wp, Vector2.zero);
+        if (hit.collider == null) return;
 
-        // 1) OverlapPoint 방식
-        Collider2D col = Physics2D.OverlapPoint(wp);
-        if (col != null)
-        {
-            Debug.Log($"[Hit] OverlapPoint hit: {col.name}");
-        }
-        else
-        {
-            Debug.Log("[Hit] OverlapPoint hit nothing");
-        }
+        var target = hit.collider.GetComponentInParent<RegionController>();
+        if (target == null || !target.gameObject.activeSelf) return;
 
-        // 2) RaycastAll 방식(방향을 주고, 아주 짧은 거리만 검사)
-        var hits = Physics2D.RaycastAll(wp, Vector2.up, 0.01f);
-        foreach (var h in hits)
-        {
-            Debug.Log($"[Hit] RaycastAll hit: {h.collider.name}");
-        }
+        StartCoroutine(BattleFlow(target));
     }
-
 
     IEnumerator BattleFlow(RegionController region)
     {
-        // 예: 전투씬 어드디티브 로드
-        yield return SceneManager.LoadSceneAsync("BattleScene", LoadSceneMode.Additive);
+        // BattleScene을 Single 모드로 로드
+        AsyncOperation op = SceneManager.LoadSceneAsync("BattleScene", LoadSceneMode.Single);
+        yield return op;
 
-        // 전투 끝 → 클리어 처리
+        // 전투 종료 후 지역 클리어
         region.isCleared = true;
         currentRegion = region;
 
-        // 전투씬 언로드
-        yield return SceneManager.UnloadSceneAsync("BattleScene");
-
         // 인접 영역 해제
         foreach (var nb in region.neighbors)
-        {
             nb.gameObject.SetActive(true);
-        }
     }
 }
