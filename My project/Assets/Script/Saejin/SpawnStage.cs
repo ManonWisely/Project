@@ -362,5 +362,9 @@ public class SpawnStage : MonoBehaviour
         {
             Debug.Log($"{x} Sections {i} 번째 스테이지 상태 : {sections[x][i].stat}");
         }
+        for(int i = 0; i < sections.Count; i++)
+        {
+            Debug.Log($"{i} Sections 개수 : {sections[i].Count}");
+        }
     } 
 }

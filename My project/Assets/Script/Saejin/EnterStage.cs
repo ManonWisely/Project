@@ -11,57 +11,56 @@ public class EnterStage : MonoBehaviour, IPointerClickHandler
     private StageNode stageNode;
     private StageNode prevNode;
     private SpawnStage spawnStage;
+    private GameObject managerOB;
+    private DontDesManager manager;
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        managerOB = GameObject.Find("DontDesManager");
+        manager = managerOB.GetComponent<DontDesManager>();
         stageNode = GetComponent<StageNode>();
         spawnStage = GetComponentInParent<SpawnStage>();
         sceneToLoad = stageNames[stageNode.type];
-        if (string.IsNullOrEmpty(sceneToLoad))
-        {
-            Debug.LogError("sceneToLoad 가 비어 있습니다!");
-            return;
-        }
-        if (stageNode.stat == "locked")
-        {
-            Debug.Log("잠겨있습니다.");
-            return;
-        }
-        else if (stageNode.stat == "cleared")
-        {
-            Debug.Log("클리어 상태입니다.");
-            return;
-        }
-        else
-        {
-            for (int i = 0; i < stageNode.nextNodes.Count; i++)
-            {
-                stageNode.nextNodes[i].stat = "opened";
-                stageNode.stat = "cleared";
-                spawnStage.find_section(stageNode);
-            }
 
-            if (stageNode.prevNodes.Count != 0)
+        manager.SetStage(stageNode);
+
+        if (stageNode.stat == "cleared" || stageNode.stat == "locked")
+        {
+            return;
+        }
+
+        for (int i = 0; i < stageNode.nextNodes.Count; i++)
+        {
+            stageNode.nextNodes[i].stat = "opened";
+            stageNode.stat = "cleared";
+            spawnStage.find_section(stageNode);
+        }
+
+        SceneManager.LoadScene(sceneToLoad);
+    }
+
+    public void SetLineColor(StageNode node)
+    {
+        Debug.Log($"SetLineColor 호출 노드 : {node}");
+        if (node.prevNodes.Count != 0)
+        {
+            prevNode = node.prevNodes[0];
+            for (int i = 0; i < prevNode.lines.Count; i++)
             {
-                prevNode = stageNode.prevNodes[0];
-                for (int i = 0; i < prevNode.lines.Count; i++)
+                if (prevNode.lines[i].endPoint == node.transform)
                 {
-                    if (prevNode.lines[i].endPoint == stageNode.transform)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        prevNode.lines[i].setInvalidColor();
-                    }
-
+                    continue;
                 }
+                else
+                {
+                    prevNode.lines[i].setInvalidColor();
+                }
+
             }
-            for (int i = 0; i < stageNode.lines.Count; i++)
-            {
-                stageNode.lines[i].setOpenColor();
-            }
-            //SceneManager.LoadScene(sceneToLoad);
+        }
+        for (int i = 0; i < node.lines.Count; i++)
+        {
+            stageNode.lines[i].setOpenColor();
         }
     }
 }

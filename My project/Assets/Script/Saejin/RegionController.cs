@@ -3,8 +3,9 @@ using UnityEngine;
 
 public class RegionController : MonoBehaviour
 {
-    [Tooltip("이 영역이 클리어되었는지")]
+    [Tooltip("클리어 & 마을 상태")]
     public bool isCleared = false;
-    [Tooltip("이 영역과 인접한(해제할) 이웃 영역들")]
+    public bool isVillaged = false;
+    [Tooltip("이 영역과 해제할 타일 영역")]
     public List<RegionController> neighbors;
 }

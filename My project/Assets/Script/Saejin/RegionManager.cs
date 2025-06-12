@@ -6,23 +6,49 @@ public class RegionManager : MonoBehaviour
 {
     public RegionController startRegion;
     private RegionController currentRegion;
+    private Vector3 pointerDownPos;
+    private bool isDragging = false;
+    public float dragThreshold = 10f;
+    public GameObject enterTileManager;
+    public EnterTiles enterTiles;
+    private GameObject managerOB;
+    private DontDesManager manager;
 
     void Start()
     {
-        // 시작 맵 씬 이름 기록
-        GameState.Instance.mapSceneName = SceneManager.GetActiveScene().name;
-
-        // 첫 영역만 활성화
-        foreach (var reg in FindObjectsOfType<RegionController>())
+        foreach (var reg in Object.FindObjectsByType<RegionController>(FindObjectsSortMode.None))
         {
             reg.gameObject.SetActive(reg == startRegion);
         }
         currentRegion = startRegion;
+        managerOB = GameObject.Find("DontDesManager");
+        manager = managerOB.GetComponent<DontDesManager>();
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0)) HandleClick();
+        if (Input.GetMouseButtonDown(0))
+        {
+            pointerDownPos = Input.mousePosition;
+            isDragging = false;
+        }
+
+        if (Input.GetMouseButton(0))
+        {
+            if (!isDragging &&
+                Vector3.Distance(pointerDownPos, Input.mousePosition) > dragThreshold)
+            {
+                isDragging = true;
+            }
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (!isDragging)
+            {
+                HandleClick();
+            }
+        }
     }
 
     void HandleClick()
@@ -34,21 +60,38 @@ public class RegionManager : MonoBehaviour
         var target = hit.collider.GetComponentInParent<RegionController>();
         if (target == null || !target.gameObject.activeSelf) return;
 
-        StartCoroutine(BattleFlow(target));
+        EnterBattle(target);
     }
 
-    IEnumerator BattleFlow(RegionController region)
+    void EnterBattle(RegionController target)
     {
-        // BattleScene을 Single 모드로 로드
-        AsyncOperation op = SceneManager.LoadSceneAsync("BattleScene", LoadSceneMode.Single);
-        yield return op;
+        if (target.isCleared && !target.isVillaged)
+        {
+            return;
+        }
+        else if (target.isVillaged)
+        {
+            SceneManager.LoadScene("VillageScene");
+        }
+        else if (target.name.StartsWith("Boss"))
+        {
+            SceneManager.LoadScene("BossBattleScene");
+        }
+        manager.SetTile(target, this);
+        target.isCleared = true;
+        currentRegion = target;
+        SceneManager.LoadScene("BattleScene");
+    }
 
-        // 전투 종료 후 지역 클리어
-        region.isCleared = true;
-        currentRegion = region;
-
-        // 인접 영역 해제
-        foreach (var nb in region.neighbors)
+    public void SetNextTile(RegionController target)
+    {
+        foreach (var nb in target.neighbors)
+        {
+            if (nb.name.StartsWith("Village"))
+            {
+                nb.isVillaged = true;
+            }
             nb.gameObject.SetActive(true);
+        }
     }
 }
