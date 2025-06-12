@@ -1,12 +1,25 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: d93c24940a934ee489a5d24c80012e6a
 TextureImporter:
   internalIDToNameTable: []
+=======
+guid: b4fe493d7e21b2f489fdcd8013d53e72
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8410411883959372341
+    second: diffuse_0
+>>>>>>> origin/main
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
+<<<<<<< HEAD
     enableMipMap: 1
+=======
+    enableMipMap: 0
+>>>>>>> origin/main
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
@@ -37,6 +50,7 @@ TextureImporter:
     filterMode: 1
     aniso: 1
     mipBias: 0
+<<<<<<< HEAD
     wrapU: 0
     wrapV: 0
     wrapW: 0
@@ -44,6 +58,15 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 0
+=======
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+>>>>>>> origin/main
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -54,7 +77,11 @@ TextureImporter:
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
+<<<<<<< HEAD
   textureType: 0
+=======
+  textureType: 8
+>>>>>>> origin/main
   textureShape: 1
   singleChannelComponent: 0
   flipbookRows: 1
@@ -93,9 +120,50 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+<<<<<<< HEAD
   spriteSheet:
     serializedVersion: 2
     sprites: []
+=======
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: diffuse_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 64
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53a4f165c09c7b470800000000000000
+      internalID: 8410411883959372341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+>>>>>>> origin/main
     outline: []
     customData: 
     physicsShape: []
@@ -109,7 +177,12 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
+<<<<<<< HEAD
     nameFileIdTable: {}
+=======
+    nameFileIdTable:
+      diffuse_0: 8410411883959372341
+>>>>>>> origin/main
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
