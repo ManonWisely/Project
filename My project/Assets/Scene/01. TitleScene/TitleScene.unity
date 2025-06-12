@@ -743,8 +743,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
-=======
 --- !u!1 &538091659
 GameObject:
   m_ObjectHideFlags: 0
@@ -2233,15 +2231,11 @@ MonoBehaviour:
   buttonClickSound: {fileID: 0}
   fadeEffect: {fileID: 686756043}
   optionsPanel: {fileID: 1480515263}
->>>>>>> origin/main
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 473102127}
-<<<<<<< HEAD
-=======
   - {fileID: 2122271688}
   - {fileID: 1594002873}
->>>>>>> origin/main
   - {fileID: 504582430}
